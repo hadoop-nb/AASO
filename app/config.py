@@ -14,6 +14,12 @@ class Settings(BaseSettings):
     qdrant_collection: str = "aaso_memory"
     embedding_model: str = "all-MiniLM-L6-v2"
     embedding_dimension: int = 384
+    ollama_base_url: str = "http://localhost:11434"
+    ollama_model: str = "llama3.2"
+    opencode_api_key: str = "sk-mKYsQXr6bwBlGJ8KIgeaeXCcc7QqnUimNARIEu0TMzUxgtICwMs40CVuJat7y7og"
+    opencode_base_url: str = "https://opencode.ai/zen/v1"
+    opencode_model: str = "big-pickle"
+    llm_provider: str = "stub"
     api_host: str = "0.0.0.0"
     api_port: int = 8000
     cors_origins: list[str] = ["*"]

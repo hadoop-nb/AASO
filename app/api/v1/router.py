@@ -8,6 +8,8 @@ from app.api.v1 import (
     experience,
     lessons,
     memory,
+    orchestrator,
+    pipelines,
     projects,
     qa,
     review,
@@ -29,3 +31,5 @@ router.include_router(qa.router, tags=["qa"])
 router.include_router(review.router, tags=["review"])
 router.include_router(analytics.router, tags=["analytics"])
 router.include_router(experience.router, tags=["experience"])
+router.include_router(orchestrator.router, tags=["orchestrator"])
+router.include_router(pipelines.router, tags=["pipelines"])

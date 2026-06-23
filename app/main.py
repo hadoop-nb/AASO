@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.v1.dashboard import router as dashboard_router
 from app.api.v1.router import router
 from app.config import settings
 from app.core.memory import qdrant_client
@@ -32,6 +33,7 @@ app.add_middleware(
 )
 
 app.include_router(router)
+app.include_router(dashboard_router)
 
 
 @app.get("/health")

@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %} — Overview{% endblock %}
+{% block content %}
+<h2>Overview</h2>
+
+<div class="stat-grid">
+    <div class="stat">
+        <div class="label">Projects</div>
+        <div class="value">{{ stats.project_count }}</div>
+    </div>
+    <div class="stat">
+        <div class="label">Total Tasks</div>
+        <div class="value">{{ stats.task_count }}</div>
+    </div>
+    <div class="stat">
+        <div class="label">Agent Runs</div>
+        <div class="value">{{ stats.agent_run_count }}</div>
+    </div>
+    <div class="stat">
+        <div class="label">Workforce Size</div>
+        <div class="value">{{ stats.workforce_size }}</div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Recent Projects</h3>
+    {% if projects %}
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Tasks</th>
+                <th>Created</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in projects %}
+            <tr>
+                <td><a href="/dashboard/projects/{{ p.project_id }}" class="link">{{ p.name }}</a></td>
+                <td><span class="badge badge-{{ p.status }}">{{ p.status }}</span></td>
+                <td>{{ p.task_count }}</td>
+                <td>{{ p.created_at[:10] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p style="color:#64748b;">No projects yet. Create one via the API to get started.</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h3>Agent Pool</h3>
+    {% if pool %}
+    <div class="stat-grid">
+        <div class="stat">
+            <div class="label">Available</div>
+            <div class="value" style="color:#6ee7b7;">{{ pool.available }}</div>
+        </div>
+        <div class="stat">
+            <div class="label">Busy</div>
+            <div class="value" style="color:#fcd34d;">{{ pool.busy }}</div>
+        </div>
+        <div class="stat">
+            <div class="label">Total</div>
+            <div class="value" style="color:#93c5fd;">{{ pool.total_agents }}</div>
+        </div>
+    </div>
+    {% if pool.agents %}
+    <table>
+        <thead>
+            <tr>
+                <th>Agent ID</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Tasks Done</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for a in pool.agents %}
+            <tr>
+                <td>{{ a.agent_id }}</td>
+                <td>{{ a.agent_type }}</td>
+                <td><span class="badge badge-{{ a.status }}">{{ a.status }}</span></td>
+                <td>{{ a.completed_tasks }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p style="color:#64748b;">No agents registered. Use the workforce API to register agents.</p>
+    {% endif %}
+    {% else %}
+    <p style="color:#64748b;">Workforce pool not available.</p>
+    {% endif %}
+</div>
+{% endblock %}

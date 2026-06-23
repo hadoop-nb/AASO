@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %} — Workforce{% endblock %}
+{% block content %}
+<h2>Workforce</h2>
+
+<div class="stat-grid">
+    <div class="stat">
+        <div class="label">Total Agents</div>
+        <div class="value">{{ pool.total_agents }}</div>
+    </div>
+    <div class="stat">
+        <div class="label">Available</div>
+        <div class="value" style="color:#6ee7b7;">{{ pool.available }}</div>
+    </div>
+    <div class="stat">
+        <div class="label">Busy</div>
+        <div class="value" style="color:#fcd34d;">{{ pool.busy }}</div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Agents</h3>
+    {% if pool.agents %}
+    <table>
+        <thead>
+            <tr>
+                <th>Agent ID</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Current Task</th>
+                <th>Completed Tasks</th>
+                <th>Errors</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for a in pool.agents %}
+            <tr>
+                <td>{{ a.agent_id }}</td>
+                <td>{{ a.agent_type }}</td>
+                <td><span class="badge badge-{{ a.status }}">{{ a.status }}</span></td>
+                <td>{{ a.current_task_id or '-' }}</td>
+                <td>{{ a.completed_tasks }}</td>
+                <td>{{ a.error_count }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p style="color:#64748b;">No agents registered. Use the workforce API to register agents.</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h3>Agents by Type</h3>
+    {% if pool.by_type %}
+    <table>
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>Count</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for type, count in pool.by_type.items() %}
+            <tr>
+                <td>{{ type }}</td>
+                <td>{{ count }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+</div>
+{% endblock %}

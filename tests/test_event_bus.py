@@ -54,13 +54,13 @@ async def test_get_history(bus: EventBus):
     await bus.publish(Event("b", {"n": 2}, "src2"))
     await bus.publish(Event("a", {"n": 3}, "src1"))
 
-    all_events = bus.get_history()
+    all_events = await bus.get_history()
     assert len(all_events) == 3
 
-    filtered = bus.get_history(event_type="a")
+    filtered = await bus.get_history(event_type="a")
     assert len(filtered) == 2
 
-    filtered = bus.get_history(source="src2")
+    filtered = await bus.get_history(source="src2")
     assert len(filtered) == 1
 
 
@@ -83,5 +83,6 @@ async def test_handler_error_does_not_crash_bus(bus: EventBus):
 @pytest.mark.asyncio
 async def test_clear(bus: EventBus):
     await bus.publish(Event("a", {}, "s"))
-    bus.clear()
-    assert len(bus.get_history()) == 0
+    await bus.clear()
+    history = await bus.get_history()
+    assert len(history) == 0

@@ -78,6 +78,8 @@ class QAAgent(BaseAgent):
             result = await self.llm.generate(
                 prompt,
                 system_prompt="You are a strict QA engineer reviewing code.",
+                project_id=self.context.project_id,
+                agent_type="qa",
             )
             import json
             try:

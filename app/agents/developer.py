@@ -141,6 +141,8 @@ class DeveloperAgent(BaseAgent):
         result = await self.llm.generate(
             prompt,
             system_prompt="You are a senior software engineer implementing features.",
+            project_id=self.context.project_id,
+            agent_type="developer",
         )
         try:
             return json.loads(result)

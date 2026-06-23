@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %} — Projects{% endblock %}
+{% block content %}
+<h2>Projects</h2>
+
+{% if projects %}
+<div class="card">
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Tasks</th>
+                <th>Created</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in projects %}
+            <tr>
+                <td><a href="/dashboard/projects/{{ p.project_id }}" class="link">{{ p.name }}</a></td>
+                <td style="color:#94a3b8;max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{ p.description or '' }}</td>
+                <td><span class="badge badge-{{ p.status }}">{{ p.status }}</span></td>
+                <td>{{ p.task_count }}</td>
+                <td>{{ p.created_at[:10] if p.created_at else '' }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="card">
+    <p style="color:#64748b;">No projects found. Create a project via the API.</p>
+</div>
+{% endif %}
+{% endblock %}

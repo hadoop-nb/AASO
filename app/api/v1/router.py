@@ -3,8 +3,11 @@ from fastapi import APIRouter
 from app.api.v1 import (
     analytics,
     code_files,
+    collaboration,
+    costs,
     decisions,
     developer,
+    events,
     experience,
     lessons,
     memory,
@@ -12,8 +15,10 @@ from app.api.v1 import (
     pipelines,
     projects,
     qa,
+    research,
     review,
     tasks,
+    workforce,
     workflows,
 )
 
@@ -33,3 +38,9 @@ router.include_router(analytics.router, tags=["analytics"])
 router.include_router(experience.router, tags=["experience"])
 router.include_router(orchestrator.router, tags=["orchestrator"])
 router.include_router(pipelines.router, tags=["pipelines"])
+router.include_router(research.router, tags=["research"])
+router.include_router(costs.router, tags=["costs"])
+router.include_router(costs.overview_router, tags=["costs"])
+router.include_router(events.router, tags=["events"])
+router.include_router(workforce.router, tags=["workforce"])
+router.include_router(collaboration.router, tags=["collaboration"])

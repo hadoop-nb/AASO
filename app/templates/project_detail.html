@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %} — {{ project.name }}{% endblock %}
+{% block content %}
+<h2>{{ project.name }}</h2>
+
+<div class="stat-grid">
+    <div class="stat">
+        <div class="label">Status</div>
+        <div class="value">{{ project.status }}</div>
+    </div>
+    <div class="stat">
+        <div class="label">Tasks</div>
+        <div class="value">{{ tasks|length }}</div>
+    </div>
+    <div class="stat">
+        <div class="label">Decisions</div>
+        <div class="value">{{ decisions|length }}</div>
+    </div>
+    <div class="stat">
+        <div class="label">Lessons</div>
+        <div class="value">{{ lessons|length }}</div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Tasks</h3>
+    {% if tasks %}
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Priority</th>
+                <th>Progress</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for t in tasks %}
+            <tr>
+                <td>{{ t.title }}</td>
+                <td><span class="badge badge-{{ t.status }}">{{ t.status }}</span></td>
+                <td>{{ t.priority }}</td>
+                <td>{{ t.completion_percentage }}%</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p style="color:#64748b;">No tasks for this project.</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h3>Decisions</h3>
+    {% if decisions %}
+    <table>
+        <thead>
+            <tr>
+                <th>Question</th>
+                <th>Selected</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in decisions %}
+            <tr>
+                <td>{{ d.question[:100] }}</td>
+                <td>{{ d.selected[:50] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p style="color:#64748b;">No decisions recorded.</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h3>Lessons</h3>
+    {% if lessons %}
+    <table>
+        <thead>
+            <tr>
+                <th>Problem</th>
+                <th>Solution</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for l in lessons %}
+            <tr>
+                <td>{{ l.problem[:100] }}</td>
+                <td>{{ l.solution[:100] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p style="color:#64748b;">No lessons learned yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

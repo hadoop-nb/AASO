@@ -100,6 +100,8 @@ class ReviewAgent(BaseAgent):
             result = await self.llm.generate(
                 prompt,
                 system_prompt="You are a senior engineer doing code review.",
+                project_id=self.context.project_id,
+                agent_type="review",
             )
             import json
             try:

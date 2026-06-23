@@ -237,6 +237,8 @@ class OrchestratorAgent(BaseAgent):
         result = await self.llm.generate(
             prompt,
             system_prompt="You are a technical lead decomposing work into sub-tasks.",
+            project_id=project_id,
+            agent_type="orchestrator",
         )
         try:
             data = json.loads(result)

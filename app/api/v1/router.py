@@ -19,6 +19,7 @@ from app.api.v1 import (
     qa,
     research,
     review,
+    skill_evolution,
     tasks,
     workforce,
     workflows,
@@ -48,3 +49,4 @@ router.include_router(workforce.router, tags=["workforce"])
 router.include_router(collaboration.router, tags=["collaboration"])
 router.include_router(knowledge_graph.router, tags=["knowledge-graph"])
 router.include_router(meta_agent.router, tags=["meta-agent"])
+router.include_router(skill_evolution.router, tags=["skill-evolution"])

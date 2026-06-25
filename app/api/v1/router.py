@@ -15,6 +15,7 @@ from app.api.v1 import (
     meta_agent,
     orchestrator,
     pipelines,
+    planning,
     projects,
     qa,
     research,
@@ -50,3 +51,4 @@ router.include_router(collaboration.router, tags=["collaboration"])
 router.include_router(knowledge_graph.router, tags=["knowledge-graph"])
 router.include_router(meta_agent.router, tags=["meta-agent"])
 router.include_router(skill_evolution.router, tags=["skill-evolution"])
+router.include_router(planning.router, tags=["planning"])

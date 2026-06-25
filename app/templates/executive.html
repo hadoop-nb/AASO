@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %} — Executive{% endblock %}
+{% block content %}
+<h2>Executive Dashboard</h2>
+
+<div class="stat-grid">
+    <div class="stat">
+        <div class="label">Organization Health</div>
+        <div class="value" style="color:{% if health >= 70 %}#6ee7b7{% elif health >= 40 %}#fcd34d{% else %}#fca5a5{% endif %};">{{ health }}%</div>
+    </div>
+    <div class="stat">
+        <div class="label">Projects</div>
+        <div class="value">{{ project_count }}</div>
+    </div>
+    <div class="stat">
+        <div class="label">Total Tasks</div>
+        <div class="value">{{ task_count }}</div>
+    </div>
+    <div class="stat">
+        <div class="label">Total Runs</div>
+        <div class="value">{{ total_runs }}</div>
+    </div>
+</div>
+
+<div class="stat-grid">
+    <div class="stat">
+        <div class="label">Success Rate</div>
+        <div class="value" style="color:{% if success_rate >= 80 %}#6ee7b7{% elif success_rate >= 50 %}#fcd34d{% else %}#fca5a5{% endif %};">{{ success_rate }}%</div>
+    </div>
+    <div class="stat">
+        <div class="label">Avg Cost / Run</div>
+        <div class="value" style="font-size:1.25rem;">${{ cost_per_run }}</div>
+    </div>
+    <div class="stat">
+        <div class="label">Avg Self-Assessment</div>
+        <div class="value">{% if avg_assessment %}{{ avg_assessment }}/10{% else %}N/A{% endif %}</div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>Project Health</h3>
+    {% if project_health %}
+    <table>
+        <thead>
+            <tr>
+                <th>Project</th>
+                <th>Runs</th>
+                <th>Success Rate</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in project_health %}
+            <tr>
+                <td><a href="/dashboard/projects/{{ p.project_id }}" class="link">{{ p.name }}</a></td>
+                <td>{{ p.runs }}</td>
+                <td>{{ p.success_rate }}%</td>
+                <td>
+                    {% if p.success_rate >= 80 %}
+                    <span class="badge badge-completed">Healthy</span>
+                    {% elif p.success_rate >= 50 %}
+                    <span class="badge badge-pending">Warning</span>
+                    {% else %}
+                    <span class="badge badge-failed">Critical</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p style="color:#64748b;">No project data available yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -28,6 +28,14 @@ templates.env.cache = PassthroughCache()
 router = APIRouter()
 
 
+def _health_score(success_rate: float, cost_eff: float, assessment_avg: float | None) -> float:
+    score = 0.0
+    score += min(success_rate / 100, 1.0) * 40
+    score += min(cost_eff, 1.0) * 20
+    score += (min(assessment_avg or 5.0, 10.0) / 10.0) * 40 if assessment_avg is not None else 20
+    return round(score, 0)
+
+
 @router.get("/dashboard")
 async def overview(request: Request, session: AsyncSession = Depends(get_db)):
     project_count = await session.scalar(select(func.count(Project.project_id)))
@@ -204,4 +212,82 @@ async def events(request: Request):
         request,
         "events.html",
         {"active": "events", "events": event_list},
+    )
+
+
+@router.get("/dashboard/executive")
+async def executive(request: Request, session: AsyncSession = Depends(get_db)):
+    from app.models.agent_run import AgentRun
+    from app.models.project import Project
+    from app.models.task import Task
+    from app.models.prompt_template import AgentAssessment
+    from app.services.cost_tracker import cost_tracker as default_tracker
+    from sqlalchemy import case, Integer
+
+    project_count = await session.scalar(select(func.count(Project.project_id)))
+    task_count = await session.scalar(select(func.count(Task.task_id)))
+
+    run_result = await session.execute(
+        select(
+            func.count(AgentRun.run_id).label("total"),
+            func.sum(case((AgentRun.success == True, 1), else_=0).cast(Integer)).label("successful"),
+        )
+    )
+    run_row = run_result.one()
+    total_runs = run_row.total or 0
+    successful = run_row.successful or 0
+    success_rate = (successful / total_runs * 100) if total_runs > 0 else 0
+
+    tracker = default_tracker
+    tracker.set_session(session)
+    cost_stats = await tracker.get_overall_stats()
+    cost_per_run = cost_stats["total_cost_usd"] / total_runs if total_runs > 0 else 0
+    cost_eff = max(0, 1.0 - (cost_per_run / 0.01))
+
+    assessment_result = await session.execute(
+        select(func.avg(AgentAssessment.score))
+    )
+    avg_assessment = assessment_result.scalar()
+
+    health = _health_score(success_rate, cost_eff, avg_assessment)
+
+    result = await session.execute(
+        select(Project).order_by(Project.created_at.desc())
+    )
+    projects = result.scalars().all()
+    project_health = []
+    for p in projects:
+        pr = await session.execute(
+            select(
+                func.count(AgentRun.run_id).label("total"),
+                func.sum(case((AgentRun.success == True, 1), else_=0).cast(Integer)).label("ok"),
+            ).where(AgentRun.project_id == p.project_id)
+        )
+        pr_row = pr.one()
+        p_total = pr_row.total or 0
+        p_ok = pr_row.ok or 0
+        p_rate = (p_ok / p_total * 100) if p_total > 0 else 0
+        project_health.append({
+            "name": p.name or p.project_id[:8],
+            "project_id": p.project_id,
+            "runs": p_total,
+            "success_rate": round(p_rate, 0),
+        })
+
+    project_health.sort(key=lambda x: x["success_rate"])
+
+    return templates.TemplateResponse(
+        request,
+        "executive.html",
+        {
+            "active": "executive",
+            "health": health,
+            "project_count": project_count or 0,
+            "task_count": task_count or 0,
+            "total_runs": total_runs,
+            "success_rate": round(success_rate, 0),
+            "cost_per_run": round(cost_per_run, 6),
+            "avg_assessment": round(avg_assessment, 1) if avg_assessment else None,
+            "project_health": project_health,
+        },
     )

@@ -12,6 +12,7 @@ from app.api.v1 import (
     knowledge_graph,
     lessons,
     memory,
+    meta_agent,
     orchestrator,
     pipelines,
     projects,
@@ -46,3 +47,4 @@ router.include_router(events.router, tags=["events"])
 router.include_router(workforce.router, tags=["workforce"])
 router.include_router(collaboration.router, tags=["collaboration"])
 router.include_router(knowledge_graph.router, tags=["knowledge-graph"])
+router.include_router(meta_agent.router, tags=["meta-agent"])

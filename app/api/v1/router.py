@@ -9,6 +9,7 @@ from app.api.v1 import (
     developer,
     events,
     experience,
+    knowledge_graph,
     lessons,
     memory,
     orchestrator,
@@ -44,3 +45,4 @@ router.include_router(costs.overview_router, tags=["costs"])
 router.include_router(events.router, tags=["events"])
 router.include_router(workforce.router, tags=["workforce"])
 router.include_router(collaboration.router, tags=["collaboration"])
+router.include_router(knowledge_graph.router, tags=["knowledge-graph"])
